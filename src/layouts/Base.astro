@@ -1,4 +1,5 @@
 ---
+import { Font } from "astro:assets";
 import "../styles/global.css";
 
 interface Props {
@@ -23,6 +24,8 @@ const { title, description } = Astro.props;
         <meta property="og:description" content={description} />
         <!-- TODO: og:url, og:image and the canonical link once the page has its domain -->
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <Font cssVariable="--font-display" preload />
+        <Font cssVariable="--font-mono" preload />
         <!-- before the first paint: sections may hide until they wipe in, only when a script can reveal them -->
         <script is:inline>document.documentElement.classList.add("has-js");</script>
     </head>
