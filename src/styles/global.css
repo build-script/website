@@ -1,0 +1,249 @@
+@import "./tokens.css";
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+* {
+    margin: 0;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    background: var(--color-background);
+    color: var(--color-text);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-body);
+    line-height: var(--line-height-body);
+    /* the headlines run over the edge on purpose, the page does not scroll sideways */
+    overflow-x: clip;
+}
+
+a {
+    color: inherit;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.25em;
+}
+
+a:hover {
+    color: var(--color-signal);
+}
+
+:focus-visible {
+    outline: var(--outline-width) solid var(--color-lime);
+    outline-offset: 3px;
+}
+
+code,
+pre {
+    font-family: var(--font-mono);
+    /* -> and == as the script writes them, not as arrows */
+    font-variant-ligatures: none;
+}
+
+svg {
+    display: block;
+}
+
+::selection {
+    background: var(--color-signal);
+    color: var(--color-background);
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+/* the width of the page with its gutters */
+.page {
+    width: min(100%, var(--page-width));
+    margin-inline: auto;
+    padding-inline: var(--page-gutter);
+}
+
+/* thin columns behind a section, the grid of the layout made visible */
+.grid-lines {
+    position: relative;
+    isolation: isolate;
+}
+
+.grid-lines::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: min(100%, var(--page-width));
+    margin-inline: auto;
+    padding-inline: var(--page-gutter);
+    background-image: repeating-linear-gradient(
+        to right,
+        var(--color-line) 0 1px,
+        transparent 1px calc((100% - 1px) / var(--grid-columns))
+    );
+    background-origin: content-box;
+    background-clip: content-box;
+    opacity: 0.55;
+    pointer-events: none;
+}
+
+.display {
+    font-family: var(--font-display);
+    font-weight: 900;
+    line-height: var(--line-height-display);
+    letter-spacing: var(--tracking-display);
+    text-transform: uppercase;
+}
+
+.label {
+    font-size: var(--font-size-label);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--color-muted);
+}
+
+/* labels turned by 90 degrees at the edge of a section */
+.edge-label {
+    position: absolute;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-size: var(--font-size-label);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--color-muted);
+    user-select: none;
+}
+
+/* diagonal warning stripes, as a texture for corners and dividers */
+.hazard {
+    background-image: repeating-linear-gradient(
+        -45deg,
+        var(--color-stripe) 0 10px,
+        transparent 10px 20px
+    );
+}
+
+/* a small cross where grid lines meet */
+.cross {
+    position: absolute;
+    width: 11px;
+    height: 11px;
+    color: var(--color-muted);
+    pointer-events: none;
+}
+
+.cross::before,
+.cross::after {
+    content: "";
+    position: absolute;
+    inset: 5px 0 auto;
+    height: 1px;
+    background: currentColor;
+}
+
+.cross::after {
+    transform: rotate(90deg);
+}
+
+/* the cut-out effect: a thick lime contour that reaches a little over the grid */
+.contour {
+    position: relative;
+}
+
+.contour::after {
+    content: "";
+    position: absolute;
+    inset: calc(var(--outline-reach) * -1);
+    border: var(--outline-width) solid var(--color-lime);
+    border-radius: var(--radius);
+    pointer-events: none;
+}
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-4);
+    min-height: 3rem;
+    padding: 0 var(--space-5);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    color: var(--color-text);
+    font: inherit;
+    font-size: var(--font-size-small);
+    letter-spacing: var(--tracking-label);
+    text-decoration: none;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: box-shadow 160ms linear, border-color 160ms linear;
+}
+
+.button:hover {
+    color: var(--color-text);
+    border-color: var(--color-signal);
+    box-shadow: var(--glow-signal);
+}
+
+.button-primary {
+    border-color: var(--color-signal);
+    background: var(--color-signal);
+    color: var(--color-background);
+    font-weight: 700;
+}
+
+.button-primary:hover {
+    color: var(--color-background);
+}
+
+/* the square arrow at the end of a button */
+.arrow {
+    display: inline-grid;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border: 1px solid currentColor;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    line-height: 1;
+}
+
+/* sections wipe in with a hard edge once they scroll into view, only with JavaScript and motion. The children
+   are clipped and not the section: browsers count a clipped element as not visible, and the section is watched. */
+.has-js [data-reveal] > * {
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path var(--duration-wipe) var(--ease-hard);
+}
+
+/* beyond the edges, so the contours that reach over the grid are not cut */
+.has-js [data-reveal].is-revealed > * {
+    clip-path: inset(-6rem -6rem -6rem -6rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+
+    .has-js [data-reveal] > * {
+        clip-path: none;
+    }
+}

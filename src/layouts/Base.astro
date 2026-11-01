@@ -1,0 +1,50 @@
+---
+import "../styles/global.css";
+
+interface Props {
+    title: string;
+    description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <meta name="theme-color" content="#0b0b0c" />
+        <meta name="color-scheme" content="dark" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <!-- TODO: og:url, og:image and the canonical link once the page has its domain -->
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <!-- before the first paint: sections may hide until they wipe in, only when a script can reveal them -->
+        <script is:inline>document.documentElement.classList.add("has-js");</script>
+    </head>
+    <body>
+        <a class="skip-link" href="#main">Skip to the content</a>
+        <slot />
+    </body>
+</html>
+
+<style>
+    .skip-link {
+        position: absolute;
+        top: var(--space-2);
+        left: var(--space-2);
+        z-index: 10;
+        padding: var(--space-2) var(--space-4);
+        background: var(--color-lime);
+        color: var(--color-background);
+        transform: translateY(-200%);
+    }
+
+    .skip-link:focus-visible {
+        transform: none;
+    }
+</style>
