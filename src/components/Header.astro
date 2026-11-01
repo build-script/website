@@ -1,0 +1,86 @@
+---
+import { LINKS, VERSION } from "../data/site";
+---
+
+<header class="header">
+    <div class="page header-row">
+        <a class="wordmark" href="/" aria-label="build-script, home">build-script</a>
+        <nav class="navigation" aria-label="Main">
+            <a href={LINKS.docs}>Docs</a>
+            <a href={LINKS.github}>GitHub</a>
+            <a href={LINKS.changelog}>Changelog</a>
+        </nav>
+        <a class="version" href={LINKS.changelog} aria-label={`Version ${VERSION}`}>v{VERSION}</a>
+    </div>
+</header>
+
+<style>
+    .header {
+        position: relative;
+        z-index: 2;
+        border-bottom: 1px solid var(--color-line);
+    }
+
+    .header-row {
+        display: flex;
+        align-items: center;
+        gap: var(--space-6);
+        min-height: 4rem;
+    }
+
+    .wordmark {
+        font-family: var(--font-display);
+        font-size: 1.375rem;
+        font-weight: 900;
+        letter-spacing: var(--tracking-display);
+        color: var(--color-signal);
+        text-decoration: none;
+        white-space: nowrap;
+    }
+
+    .navigation {
+        display: flex;
+        gap: var(--space-5);
+        margin-left: auto;
+        font-size: var(--font-size-small);
+        text-transform: uppercase;
+        letter-spacing: var(--tracking-label);
+    }
+
+    .navigation a {
+        color: var(--color-muted);
+        text-decoration: none;
+    }
+
+    .navigation a:hover {
+        color: var(--color-text);
+    }
+
+    .version {
+        padding: var(--space-1) var(--space-2);
+        border: 1px solid var(--color-line);
+        border-radius: var(--radius);
+        font-size: var(--font-size-label);
+        letter-spacing: var(--tracking-label);
+        color: var(--color-lime);
+        text-decoration: none;
+    }
+
+    @media (max-width: 40rem) {
+        .header-row {
+            gap: var(--space-4);
+        }
+
+        .wordmark {
+            font-size: 1.125rem;
+        }
+
+        .navigation {
+            gap: var(--space-3);
+        }
+
+        .navigation a:nth-child(3) {
+            display: none;
+        }
+    }
+</style>
