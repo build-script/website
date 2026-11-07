@@ -1,0 +1,145 @@
+---
+import CopyCommand from "./CopyCommand.astro";
+import Terminal from "./Terminal.astro";
+import { HERO_SESSION } from "../data/terminal";
+import { INSTALL_COMMAND, INSTALL_OTHER_SYSTEMS, VERSION } from "../data/site";
+---
+
+<section class="hero grid-lines" aria-labelledby="hero-title">
+    <span class="edge-label edge-left" aria-hidden="true">Build · Deps · Run</span>
+    <span class="edge-label edge-right" aria-hidden="true">v{VERSION}</span>
+    <span class="cross" style="top: 1.5rem; left: var(--page-gutter);" aria-hidden="true"></span>
+    <span class="cross" style="bottom: 1.5rem; right: var(--page-gutter);" aria-hidden="true"></span>
+
+    <div class="page">
+        <h1 class="hero-title display" id="hero-title">
+            <span class="hero-line">Build</span>
+            <span class="hero-line hero-line-wide">everything.</span>
+            <span class="hero-line hero-line-signal">One tool.</span>
+        </h1>
+
+        <div class="hero-body">
+            <div class="hero-copy">
+                <p class="hero-lead">
+                    One small build language and one command line for Kotlin, Java, Android, C and C++. build-script
+                    downloads its own JDK, compilers and libraries, and project.lock pins every library.
+                </p>
+                <CopyCommand command={INSTALL_COMMAND} label="Install · macOS on Apple silicon" />
+                <div class="hero-actions">
+                    <a class="button button-primary" href="#quickstart">Get started <span class="arrow" aria-hidden="true">↘</span></a>
+                    <a class="button" href={INSTALL_OTHER_SYSTEMS}>Linux, Windows <span class="arrow" aria-hidden="true">↗</span></a>
+                </div>
+            </div>
+
+            <div class="hero-terminal">
+                <Terminal session={HERO_SESSION} caption="A real build of a Kotlin program, then build run, which finds it up to date and starts it." />
+            </div>
+        </div>
+    </div>
+    <div class="hero-stripes hazard" aria-hidden="true"></div>
+</section>
+
+<style>
+    .hero {
+        position: relative;
+        padding-block: var(--space-7) var(--space-9);
+        overflow: hidden;
+    }
+
+    .edge-left {
+        top: var(--space-8);
+        left: calc(var(--page-gutter) / 2 - 0.4rem);
+    }
+
+    .edge-right {
+        right: calc(var(--page-gutter) / 2 - 0.4rem);
+        bottom: var(--space-8);
+    }
+
+    .hero-title {
+        display: grid;
+        font-size: var(--font-size-hero);
+        /* the widest line runs over the right edge */
+        white-space: nowrap;
+    }
+
+    .hero-line-wide {
+        margin-right: -0.25em;
+    }
+
+    .hero-line-signal {
+        color: var(--color-signal);
+    }
+
+    .hero-body {
+        display: grid;
+        grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+        gap: var(--space-8);
+        align-items: start;
+        margin-top: var(--space-7);
+    }
+
+    .hero-copy {
+        display: grid;
+        gap: var(--space-6);
+        min-width: 0;
+        padding-top: var(--space-4);
+    }
+
+    .hero-lead {
+        max-width: 34rem;
+        font-size: var(--font-size-lead);
+        color: var(--color-muted);
+    }
+
+    .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-4);
+    }
+
+    .hero-terminal {
+        min-width: 0;
+        transform: rotate(-2deg);
+        transform-origin: left top;
+    }
+
+    .hero-stripes {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        width: min(38vw, 28rem);
+        height: var(--space-7);
+        border-top: 1px solid var(--color-line);
+        border-left: 1px solid var(--color-line);
+    }
+
+    @media (max-width: 63.99rem) {
+        .hero-body {
+            grid-template-columns: minmax(0, 1fr);
+            gap: var(--space-8);
+        }
+
+        .hero-terminal {
+            transform: rotate(-1deg);
+        }
+    }
+
+    @media (max-width: 47.99rem) {
+        .hero {
+            padding-top: var(--space-6);
+        }
+
+        .hero-body {
+            margin-top: var(--space-5);
+        }
+
+        .hero-copy {
+            padding-top: 0;
+        }
+
+        .edge-label {
+            display: none;
+        }
+    }
+</style>

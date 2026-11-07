@@ -1,0 +1,73 @@
+---
+interface Props {
+    command: string;
+    label: string;
+}
+
+const { command, label } = Astro.props;
+---
+
+<div class="copy-command">
+    <span class="label">{label}</span>
+    <div class="copy-row">
+        <code class="copy-text"><span class="copy-prompt" aria-hidden="true">$</span> {command}</code>
+        <!-- shown by the script, a button without the clipboard does nothing -->
+        <button class="copy-button" type="button" data-copy={command} hidden>
+            <span data-copy-label>Copy</span>
+        </button>
+    </div>
+</div>
+
+<script>
+    import { enableCopyButtons } from "../scripts/copy";
+
+    enableCopyButtons();
+</script>
+
+<style>
+    .copy-command {
+        display: grid;
+        gap: var(--space-2);
+        min-width: 0;
+    }
+
+    .copy-row {
+        display: flex;
+        min-width: 0;
+        border: 1px solid var(--color-line);
+        border-radius: var(--radius);
+        background: var(--color-surface);
+    }
+
+    .copy-text {
+        flex: 1;
+        min-width: 0;
+        padding: var(--space-3) var(--space-4);
+        overflow-x: auto;
+        font-size: var(--font-size-small);
+        white-space: nowrap;
+        scrollbar-width: thin;
+    }
+
+    .copy-prompt {
+        color: var(--color-signal);
+    }
+
+    .copy-button {
+        flex: none;
+        width: 5.5rem;
+        border: 0;
+        border-left: 1px solid var(--color-line);
+        background: transparent;
+        color: var(--color-text);
+        font: inherit;
+        font-size: var(--font-size-label);
+        letter-spacing: var(--tracking-label);
+        text-transform: uppercase;
+        cursor: pointer;
+    }
+
+    .copy-button:hover {
+        color: var(--color-signal);
+    }
+</style>

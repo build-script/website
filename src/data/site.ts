@@ -12,3 +12,12 @@ export const LINKS = {
     changelog: `${REPOSITORY}/commits/main`,
 } as const;
 
+/**
+ * The two lines of the installation in the README, for macOS on Apple silicon.
+ * TODO: build-script has published no release yet, the download only works after the first one
+ */
+export const INSTALL_COMMAND =
+    "curl -L https://github.com/build-script/build/releases/latest/download/build-script-aarch64-apple-darwin.tar.gz | tar xz && mv build-script-aarch64-apple-darwin/build ~/.local/bin/";
+
+/** The README's table of archives, for every other system */
+export const INSTALL_OTHER_SYSTEMS = `${REPOSITORY}#installation`;
