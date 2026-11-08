@@ -5,11 +5,17 @@ export const REPOSITORY = "https://github.com/build-script/build";
 /** The release the page describes, from Cargo.toml of build-script */
 export const VERSION = "0.1.0";
 
+/** The commit of build-script the outputs on the page were taken from */
+export const COMMIT = "4401415";
+
 export const LINKS = {
     docs: `${REPOSITORY}/tree/main/docs`,
     github: REPOSITORY,
     // TODO: build-script has no changelog and no release yet, the history of main stands in for one
     changelog: `${REPOSITORY}/commits/main`,
+    language: `${REPOSITORY}/blob/main/docs/language.md`,
+    commands: `${REPOSITORY}/blob/main/docs/commands.md`,
+    license: `${REPOSITORY}/blob/main/LICENSE`,
 } as const;
 
 /**

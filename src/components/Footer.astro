@@ -1,0 +1,128 @@
+---
+import Barcode from "./Barcode.astro";
+import { COMMIT, LINKS, VERSION } from "../data/site";
+
+const columns = [
+    {
+        title: "Docs",
+        links: [
+            { label: "The build language", href: LINKS.language },
+            { label: "Commands", href: LINKS.commands },
+            { label: "All docs", href: LINKS.docs },
+        ],
+    },
+    {
+        title: "Project",
+        links: [
+            { label: "GitHub", href: LINKS.github },
+            { label: "Changelog", href: LINKS.changelog },
+            { label: "MIT License", href: LINKS.license },
+        ],
+    },
+];
+---
+
+<footer class="footer">
+    <div class="footer-stripes hazard" aria-hidden="true"></div>
+    <div class="page footer-grid">
+        <div class="footer-about">
+            <p class="footer-wordmark">build-script</p>
+            <p class="footer-text">One build language and one command line for every language. MIT licensed.</p>
+            <Barcode text={`${VERSION} ${COMMIT}`} />
+        </div>
+        {columns.map((column) => (
+            <nav class="footer-column" aria-label={column.title}>
+                <p class="label">{column.title}</p>
+                <ul>
+                    {column.links.map((link) => (
+                        <li><a href={link.href}>{link.label}</a></li>
+                    ))}
+                </ul>
+            </nav>
+        ))}
+    </div>
+    <p class="footer-giant display" aria-hidden="true">build-script</p>
+</footer>
+
+<style>
+    .footer {
+        position: relative;
+        overflow: hidden;
+        border-top: 1px solid var(--color-line);
+    }
+
+    .footer-stripes {
+        height: var(--space-5);
+        border-bottom: 1px solid var(--color-line);
+    }
+
+    .footer-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 6fr) repeat(3, minmax(0, 2fr));
+        gap: var(--space-7);
+        padding-block: var(--space-8) var(--space-7);
+    }
+
+    .footer-about {
+        display: grid;
+        align-content: start;
+        gap: var(--space-5);
+    }
+
+    .footer-wordmark {
+        font-family: var(--font-display);
+        font-size: 1.5rem;
+        font-weight: 900;
+        letter-spacing: var(--tracking-display);
+        color: var(--color-signal);
+    }
+
+    .footer-text {
+        max-width: 26rem;
+        color: var(--color-muted);
+    }
+
+    .footer-column ul {
+        display: grid;
+        gap: var(--space-2);
+        margin-top: var(--space-4);
+        padding: 0;
+        list-style: none;
+    }
+
+    .footer-column a {
+        color: var(--color-text);
+        text-decoration: none;
+    }
+
+    .footer-column a:hover {
+        color: var(--color-signal);
+    }
+
+    /* the name runs off the bottom of the page */
+    .footer-giant {
+        margin-bottom: -0.2em;
+        padding-inline: var(--page-gutter);
+        font-size: var(--font-size-giant);
+        line-height: 0.78;
+        white-space: nowrap;
+        color: var(--color-surface);
+        -webkit-text-stroke: 1px var(--color-line);
+    }
+
+    @media (max-width: 63.99rem) {
+        .footer-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .footer-about {
+            grid-column: 1 / -1;
+        }
+    }
+
+    @media (max-width: 40rem) {
+        .footer-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+</style>

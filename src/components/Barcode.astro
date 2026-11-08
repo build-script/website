@@ -1,0 +1,38 @@
+---
+import { code39 } from "../lib/code39";
+
+interface Props {
+    text: string;
+}
+
+const { text } = Astro.props;
+const barcode = code39(text);
+const height = 56;
+---
+
+<figure class="barcode">
+    <svg viewBox={`0 0 ${barcode.width} ${height}`} role="img" aria-label={`Code 39 barcode of version and commit: ${text}`} preserveAspectRatio="none" shape-rendering="crispEdges">
+        {barcode.bars.map((bar) => <rect x={bar.x} y="0" width={bar.width} height={height} />)}
+    </svg>
+    <figcaption class="label">v{text}</figcaption>
+</figure>
+
+<style>
+    .barcode {
+        display: grid;
+        gap: var(--space-2);
+        width: min(100%, 26rem);
+        margin: 0;
+    }
+
+    .barcode svg {
+        width: 100%;
+        height: 3.5rem;
+        /* a quiet zone the scanner needs, light behind dark bars */
+        background: var(--color-text);
+    }
+
+    .barcode rect {
+        fill: var(--color-background);
+    }
+</style>
