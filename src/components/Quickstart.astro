@@ -1,0 +1,138 @@
+---
+import SectionHeading from "./SectionHeading.astro";
+import { QUICKSTART } from "../data/quickstart";
+import { LINKS } from "../data/site";
+---
+
+<section class="quickstart grid-lines" id="quickstart" aria-labelledby="quickstart-title" data-reveal>
+    <div class="page">
+        <SectionHeading index="04" label="Quickstart" id="quickstart-title">Three commands.</SectionHeading>
+        <p class="quickstart-lead">
+            Once build is installed, a Kotlin program is three commands away. The JDK and the Kotlin compiler come with the
+            first build.
+        </p>
+
+        <ol class="steps">
+            {QUICKSTART.map((step, index) => (
+                <li class="step">
+                    <span class="step-number display" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+                    <h3 class="step-title label">{step.title}</h3>
+                    <pre class="step-code"><code><span class="step-prompt" aria-hidden="true">$ </span>{step.command}</code></pre>
+                    <pre class="step-output" aria-label={`Output of ${step.command}`}>{step.output.map((line) => (
+                        <span class="step-line">{line.module && <span class="step-module">[{line.module}] </span>}{line.text}</span>
+                    ))}</pre>
+                </li>
+            ))}
+        </ol>
+
+        <div class="quickstart-next">
+            <a class="button button-primary" href={LINKS.docs}>Read the docs <span class="arrow" aria-hidden="true">↗</span></a>
+            <a class="button" href={LINKS.commands}>Every command <span class="arrow" aria-hidden="true">↗</span></a>
+        </div>
+    </div>
+</section>
+
+<style>
+    .quickstart {
+        position: relative;
+        padding-block: var(--space-9);
+        border-top: 1px solid var(--color-line);
+    }
+
+    .quickstart-lead {
+        max-width: 40rem;
+        margin-top: var(--space-6);
+        color: var(--color-muted);
+    }
+
+    .steps {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: var(--space-6);
+        margin-top: var(--space-8);
+        padding: 0;
+        list-style: none;
+    }
+
+    .step {
+        position: relative;
+        display: grid;
+        grid-template-rows: auto auto auto 1fr;
+        min-width: 0;
+        padding: var(--space-5);
+        border: 1px solid var(--color-line);
+        border-radius: var(--radius);
+        background: var(--color-surface);
+    }
+
+    .step:hover::after {
+        content: "";
+        position: absolute;
+        inset: calc(var(--outline-reach) * -0.6);
+        border: var(--outline-width) solid var(--color-lime);
+        border-radius: var(--radius);
+        pointer-events: none;
+    }
+
+    .step-number {
+        font-size: clamp(3.5rem, 2rem + 4vw, 6rem);
+        color: var(--color-signal);
+    }
+
+    .step-title {
+        margin-top: var(--space-4);
+        font-weight: 400;
+    }
+
+    .step-code {
+        margin-top: var(--space-3);
+        overflow-x: auto;
+        font-size: var(--font-size-body);
+        color: var(--color-text);
+    }
+
+    .step-prompt {
+        color: var(--color-signal);
+    }
+
+    .step-output {
+        margin-top: var(--space-4);
+        padding-top: var(--space-4);
+        overflow-x: auto;
+        border-top: 1px dashed var(--color-line);
+        /* whitespace of the template between the lines does not count, the lines keep theirs */
+        white-space: normal;
+        font-size: var(--font-size-label);
+        line-height: 1.8;
+        color: var(--color-muted);
+    }
+
+    .step-line {
+        display: block;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+    }
+
+    .step-module {
+        color: var(--color-signal);
+    }
+
+    .quickstart-next {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-4);
+        margin-top: var(--space-7);
+    }
+
+    @media (max-width: 63.99rem) {
+        .steps {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+
+    @media (max-width: 47.99rem) {
+        .quickstart {
+            padding-block: var(--space-8);
+        }
+    }
+</style>
