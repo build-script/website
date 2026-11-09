@@ -1,0 +1,213 @@
+---
+import SectionHeading from "./SectionHeading.astro";
+import { LOGIC_EXAMPLE, POM_XML, PROJECT_BUILD } from "../data/comparison";
+import { escapeHtml } from "../lib/html";
+import { countLines, highlightBuildScript } from "../lib/highlight";
+
+const pom = escapeHtml(POM_XML);
+const script = highlightBuildScript(PROJECT_BUILD);
+const logic = highlightBuildScript(LOGIC_EXAMPLE);
+---
+
+<section class="real grid-lines" id="language" aria-labelledby="real-title" data-reveal>
+    <span class="edge-label edge" aria-hidden="true">Build</span>
+
+    <div class="page">
+        <SectionHeading index="02" label="The build language" id="real-title">Your build script<br />is a real language.</SectionHeading>
+        <p class="real-lead">
+            Java has no official build tool, only a third-party one, Maven, and a third party on top of that, Gradle. The same
+            program in both worlds: a Kotlin app with Gson that starts with java -jar.
+        </p>
+
+        <div class="comparison">
+            <figure class="pane pane-pom">
+                <figcaption class="pane-caption">
+                    <span>pom.xml · Maven</span>
+                    <span>{countLines(POM_XML)} lines</span>
+                </figcaption>
+                <pre class="pane-code pane-code-faded"><code set:html={pom} /></pre>
+            </figure>
+
+            <figure class="pane pane-script contour">
+                <figcaption class="pane-caption">
+                    <span>project.build · build-script</span>
+                    <span>{countLines(PROJECT_BUILD)} lines</span>
+                </figcaption>
+                <pre class="pane-code"><code set:html={script} /></pre>
+                <p class="pane-note">build run downloads the JDK, Kotlin and Gson, builds the jar and starts it.</p>
+            </figure>
+        </div>
+
+        <!-- TODO: the brief asks for a loop; the build language has none on purpose (docs/language.md), so the
+             example shows a function and a condition instead -->
+        <div class="logic">
+            <figure class="pane pane-logic">
+                <figcaption class="pane-caption">
+                    <span>project.build · functions and conditions</span>
+                    <span>{countLines(LOGIC_EXAMPLE)} lines</span>
+                </figcaption>
+                <pre class="pane-code"><code set:html={logic} /></pre>
+            </figure>
+
+            <ul class="logic-points">
+                <li><strong>Functions</strong> with typed parameters and defaults. What every module shares is written once.</li>
+                <li><strong>Conditions are values.</strong> The block that runs is the result, like the JDK of a CI build.</li>
+                <li class="logic-statement display">No loops.<br />No IO.<br />No HTTP.</li>
+                <li class="logic-small">On purpose: building has to be simple and reproducible.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<style>
+    .real {
+        position: relative;
+        padding-block: var(--space-9);
+        border-top: 1px solid var(--color-line);
+    }
+
+    .edge {
+        top: var(--space-9);
+        left: calc(var(--page-gutter) / 2 - 0.4rem);
+    }
+
+    .real-lead {
+        max-width: 44rem;
+        margin-top: var(--space-6);
+        color: var(--color-muted);
+    }
+
+    .comparison {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: var(--space-7);
+        align-items: start;
+        margin-top: var(--space-8);
+    }
+
+    .pane {
+        min-width: 0;
+        margin: 0;
+        border: 1px solid var(--color-line);
+        border-radius: var(--radius);
+        background: var(--color-surface);
+    }
+
+    .pane-caption {
+        display: flex;
+        justify-content: space-between;
+        gap: var(--space-4);
+        padding: var(--space-3) var(--space-4);
+        border-bottom: 1px solid var(--color-line);
+        font-size: var(--font-size-label);
+        letter-spacing: var(--tracking-label);
+        text-transform: uppercase;
+        color: var(--color-muted);
+    }
+
+    .pane-code {
+        padding: var(--space-5) var(--space-4);
+        overflow-x: auto;
+        font-size: var(--font-size-small);
+        line-height: 1.7;
+    }
+
+    /* Maven in gray, cut off: the reader gets the idea before the end */
+    .pane-pom .pane-code {
+        max-height: 30rem;
+        overflow: hidden;
+        color: var(--color-muted);
+    }
+
+    .pane-code-faded {
+        mask-image: linear-gradient(to bottom, #000 55%, transparent);
+    }
+
+    .pane-script {
+        transform: rotate(-2deg);
+    }
+
+    .pane-note {
+        padding: 0 var(--space-4) var(--space-5);
+        font-size: var(--font-size-small);
+        color: var(--color-muted);
+    }
+
+    .pane-code :global(.token-keyword) {
+        color: var(--color-signal);
+    }
+
+    .pane-code :global(.token-comment),
+    .pane-code :global(.token-punctuation) {
+        color: var(--color-muted);
+    }
+
+    .pane-code :global(.token-type) {
+        color: var(--color-signal);
+        font-style: italic;
+    }
+
+    .pane-code :global(.token-call) {
+        font-weight: 700;
+    }
+
+    .logic {
+        display: grid;
+        grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+        gap: var(--space-7);
+        margin-top: var(--space-9);
+    }
+
+    .logic-points {
+        display: grid;
+        align-content: start;
+        gap: var(--space-5);
+        padding: 0;
+        list-style: none;
+        color: var(--color-muted);
+    }
+
+    .logic-points strong {
+        color: var(--color-text);
+        font-weight: 700;
+    }
+
+    .logic-points code {
+        color: var(--color-text);
+    }
+
+    .logic-statement {
+        margin-top: var(--space-5);
+        font-size: clamp(2.5rem, 1.5rem + 3vw, 4.5rem);
+        color: var(--color-text);
+    }
+
+    .logic-small {
+        font-size: var(--font-size-small);
+    }
+
+    @media (max-width: 63.99rem) {
+        .comparison,
+        .logic {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .pane-script {
+            transform: rotate(-1deg);
+        }
+
+        .pane-pom .pane-code {
+            max-height: 16rem;
+        }
+    }
+
+    @media (max-width: 47.99rem) {
+        .real {
+            padding-block: var(--space-8);
+        }
+
+        .edge-label {
+            display: none;
+        }
+    }
+</style>

@@ -1,0 +1,39 @@
+---
+interface Props {
+    /** the number of the section, like 01 */
+    index: string;
+    label: string;
+    id: string;
+}
+
+const { index, label, id } = Astro.props;
+---
+
+<div class="section-heading">
+    <p class="label"><span class="section-index">{index}</span> / {label}</p>
+    <h2 class="section-title display" id={id}><slot /></h2>
+</div>
+
+<style>
+    .section-heading {
+        display: grid;
+        gap: var(--space-4);
+    }
+
+    .section-index {
+        color: var(--color-signal);
+    }
+
+    .section-title {
+        font-size: var(--font-size-section);
+        white-space: nowrap;
+    }
+
+    /* long titles may break on small screens, the words stay whole */
+    @media (max-width: 47.99rem) {
+        .section-title {
+            white-space: normal;
+            overflow-wrap: normal;
+        }
+    }
+</style>
