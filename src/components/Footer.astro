@@ -2,6 +2,7 @@
 import Barcode from "./Barcode.astro";
 import { COMMIT, LINKS, VERSION } from "../data/site";
 import { fitStyle } from "../lib/fit";
+import { linkAttributes } from "../lib/links";
 
 const WORDMARK = "build-script";
 
@@ -46,7 +47,7 @@ const columns = [
                 <p class="label">{column.title}</p>
                 <ul>
                     {column.links.map((link) => (
-                        <li><a href={link.href}>{link.label}</a></li>
+                        <li><a href={link.href} {...linkAttributes(link.href)}>{link.label}</a></li>
                     ))}
                 </ul>
             </nav>
