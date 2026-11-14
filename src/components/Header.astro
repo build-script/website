@@ -1,10 +1,11 @@
 ---
 import { LINKS, VERSION } from "../data/site";
+import { HOME } from "../lib/paths";
 ---
 
 <header class="header">
     <div class="page header-row">
-        <a class="wordmark" href="/" aria-label="build-script, home">build-script</a>
+        <a class="wordmark" href={HOME} aria-label="build-script, home">build-script</a>
         <nav class="navigation" aria-label="Main">
             <a href={LINKS.docs}>Docs</a>
             <a href={LINKS.github}>GitHub</a>

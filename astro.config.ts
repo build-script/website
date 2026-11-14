@@ -1,10 +1,17 @@
 import { defineConfig, fontProviders } from "astro/config";
 
+// The address of the page comes from the deploy: on GitHub Pages the origin and the base path of the Pages settings,
+// https://build-script.github.io and /website, or the own domain once one is set there. Without them, as in the
+// check and on the dev server, the page lives at the root and has no canonical link.
+// TODO: an own domain in the Pages settings
+const site = process.env["SITE_ORIGIN"];
+const base = process.env["BASE_PATH"];
+
 // A static page: HTML rendered at build time, every style inlined into it, the fonts self-hosted and preloaded,
 // a few small scripts for the terminal, the languages and the reveals. No framework at runtime.
 export default defineConfig({
-    // TODO: the domain of the page, for canonical links and Open Graph
-    // site: "https://build-script.dev",
+    ...(site ? { site } : {}),
+    ...(base ? { base } : {}),
     compressHTML: true,
     devToolbar: { enabled: false },
     build: {
