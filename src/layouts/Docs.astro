@@ -208,6 +208,8 @@ const source = `${repository.url}/blob/${commit}/${doc.path}`;
     .prose {
         padding-top: var(--space-6);
         overflow-wrap: anywhere;
+        /* its tables ask how wide it is */
+        container: prose / inline-size;
     }
 
     .prose > :global(* + *) {
@@ -275,6 +277,17 @@ const source = `${repository.url}/blob/${commit}/${doc.path}`;
         border-radius: var(--radius);
         background: var(--color-surface);
         font-size: 0.875em;
+        /* a frame on every line when it breaks */
+        -webkit-box-decoration-break: clone;
+        box-decoration-break: clone;
+    }
+
+    /* the words of inline code, see src/lib/markdown.ts: whole unless one is wider than the line. break-word and not
+       anywhere: a column of a table stays as wide as its widest word */
+    .prose :global(.code-word) {
+        display: inline-block;
+        max-width: 100%;
+        overflow-wrap: break-word;
     }
 
     .prose :global(pre.code) {
@@ -307,11 +320,6 @@ const source = `${repository.url}/blob/${commit}/${doc.path}`;
         border-bottom: 1px solid var(--color-line);
         text-align: left;
         vertical-align: top;
-    }
-
-    /* a file name stays whole, the table scrolls instead */
-    .prose :global(td code) {
-        white-space: nowrap;
     }
 
     .prose :global(th) {
@@ -410,6 +418,113 @@ const source = `${repository.url}/blob/${commit}/${doc.path}`;
 
         .docs-pager-next {
             grid-column: 1;
+        }
+    }
+
+    /* Where a table has no room, every row becomes a card: its first cell on top, the others below with the name of
+       their column. The room is the width of the text, not of the window: two columns fit down to 36rem, three and
+       more need 48rem. The same rules twice, a container query takes no list of conditions per selector. */
+    @container prose (max-width: 35.99rem) {
+        .prose :global(.table-scroll) {
+            overflow: visible;
+            border: none;
+        }
+
+        .prose :global(.table-scroll :is(table, tbody, tr, td)) {
+            display: block;
+        }
+
+        .prose :global(.table-scroll thead) {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip-path: inset(50%);
+        }
+
+        .prose :global(.table-scroll tr) {
+            padding: var(--space-3) var(--space-4);
+            border: 1px solid var(--color-line);
+            border-radius: var(--radius);
+        }
+
+        .prose :global(.table-scroll tr + tr) {
+            margin-top: var(--space-3);
+        }
+
+        .prose :global(.table-scroll td) {
+            padding: 0;
+            border: none;
+        }
+
+        .prose :global(.table-scroll td:empty) {
+            display: none;
+        }
+
+        .prose :global(.table-scroll td + td) {
+            margin-top: var(--space-2);
+            color: var(--color-muted);
+        }
+
+        .prose :global(.table-scroll td + td[data-label]::before) {
+            content: attr(data-label);
+            display: block;
+            margin-bottom: var(--space-1);
+            font-size: var(--font-size-label);
+            letter-spacing: var(--tracking-label);
+            text-transform: uppercase;
+        }
+    }
+
+    @container prose (max-width: 47.99rem) {
+        .prose :global(.table-wide) {
+            overflow: visible;
+            border: none;
+        }
+
+        .prose :global(.table-wide :is(table, tbody, tr, td)) {
+            display: block;
+        }
+
+        .prose :global(.table-wide thead) {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip-path: inset(50%);
+        }
+
+        .prose :global(.table-wide tr) {
+            padding: var(--space-3) var(--space-4);
+            border: 1px solid var(--color-line);
+            border-radius: var(--radius);
+        }
+
+        .prose :global(.table-wide tr + tr) {
+            margin-top: var(--space-3);
+        }
+
+        .prose :global(.table-wide td) {
+            padding: 0;
+            border: none;
+        }
+
+        .prose :global(.table-wide td:empty) {
+            display: none;
+        }
+
+        .prose :global(.table-wide td + td) {
+            margin-top: var(--space-2);
+            color: var(--color-muted);
+        }
+
+        .prose :global(.table-wide td + td[data-label]::before) {
+            content: attr(data-label);
+            display: block;
+            margin-bottom: var(--space-1);
+            font-size: var(--font-size-label);
+            letter-spacing: var(--tracking-label);
+            text-transform: uppercase;
         }
     }
 </style>

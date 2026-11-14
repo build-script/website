@@ -104,7 +104,46 @@ export function docsMarkdown(base: string): HastPluginEntry {
                 {
                     filter: ["table"],
                     visit(node, context) {
-                        context.wrapNode(node, { type: "element", tagName: "div", properties: { className: ["table-scroll"] }, children: [] });
+                        // every cell names its column, for small screens where a row becomes a card
+                        const sections = node.children.filter((child): child is Element => child.type === "element");
+                        const rows = sections.flatMap((section) => section.children.filter((child) => isElement(child, "tr")));
+                        const cells = (row: Element) => row.children.filter((child): child is Element => child.type === "element");
+                        const [header, ...body] = rows;
+                        const labels = header === undefined ? [] : cells(header).map((cell) => context.textContent(cell).trim());
+
+                        for (const row of body) {
+                            cells(row).forEach((cell, index) => {
+                                const label = labels[index];
+                                if (label !== undefined && label !== "") {
+                                    context.setProperty(cell, "dataLabel", label);
+                                }
+                            });
+                        }
+
+                        // three columns and more need more room before their rows become cards, see Docs.astro
+                        const className = labels.length > 2 ? ["table-scroll", "table-wide"] : ["table-scroll"];
+                        context.wrapNode(node, { type: "element", tagName: "div", properties: { className }, children: [] });
+                    },
+                },
+                {
+                    filter: ["code"],
+                    visit(node, context) {
+                        if (context.parent(node)?.type === "element" && isElement(context.parent(node) as ElementContent, "pre")) {
+                            return;
+                        }
+
+                        // every word of inline code stays whole: a line breaks between them, not after a hyphen of
+                        // --module or build-script, and inside one only when it alone is wider than the line
+                        const words = context.textContent(node).split(" ");
+                        return {
+                            type: "element",
+                            tagName: "code",
+                            properties: node.properties,
+                            children: words.flatMap((word, index): ElementContent[] => [
+                                ...(index > 0 ? [{ type: "text" as const, value: " " }] : []),
+                                { type: "element", tagName: "span", properties: { className: ["code-word"] }, children: [{ type: "text", value: word }] },
+                            ]),
+                        };
                     },
                 },
             ],
