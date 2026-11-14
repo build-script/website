@@ -21,8 +21,8 @@ import { INSTALL_COMMAND, INSTALL_OTHER_SYSTEMS, VERSION } from "../data/site";
         <div class="hero-body">
             <div class="hero-copy">
                 <p class="hero-lead">
-                    One small build language and one command line for Kotlin, Java, Android, C and C++. build-script
-                    downloads its own JDK, compilers and libraries, and project.lock pins every library.
+                    One small build language and one command line for Kotlin, Java, Android, C, C++ and Go. build-script
+                    downloads its own JDK, compilers and libraries, and project.lock pins every library and plugin.
                 </p>
                 <CopyCommand command={INSTALL_COMMAND} label="Install · macOS on Apple silicon" />
                 <div class="hero-actions">
@@ -32,7 +32,7 @@ import { INSTALL_COMMAND, INSTALL_OTHER_SYSTEMS, VERSION } from "../data/site";
             </div>
 
             <div class="hero-terminal">
-                <Terminal session={HERO_SESSION} caption="A real build of a Kotlin program, then build run, which finds it up to date and starts it." />
+                <Terminal session={HERO_SESSION} caption="A real build of a workspace with a Kotlin app, a C++ library and a Go program, built twice: the second build is up to date." />
             </div>
         </div>
     </div>

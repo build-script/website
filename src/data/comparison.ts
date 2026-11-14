@@ -108,8 +108,9 @@ build_kotlin(
 )
 `;
 
-/** Logic of the build language: a function every service shares and a condition */
+/** Logic of the build language: a function every service shares, a condition and a plugin */
 export const LOGIC_EXAMPLE = `use kotlin
+use go
 
 repositories = list(maven_central())
 jdk = if env("CI", default = "false") == "true" { "17" } else { "21" }
@@ -128,4 +129,7 @@ service = fn (name: str, dependencies: list<str | module> = list()) -> module {
 
 core = service("core")
 api = service("api", list(core, "com.google.code.gson:gson:2.15.0"))
+
+// a Go program for the servers, from the official plugin
+build_go("gateway", goos = "linux", goarch = "arm64", directory = "gateway")
 `;

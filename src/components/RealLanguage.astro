@@ -1,6 +1,7 @@
 ---
 import SectionHeading from "./SectionHeading.astro";
 import { LOGIC_EXAMPLE, POM_XML, PROJECT_BUILD } from "../data/comparison";
+import { LINKS } from "../data/site";
 import { escapeHtml } from "../lib/html";
 import { countLines, highlightBuildScript } from "../lib/highlight";
 
@@ -39,11 +40,11 @@ const logic = highlightBuildScript(LOGIC_EXAMPLE);
         </div>
 
         <!-- TODO: the brief asks for a loop; the build language has none on purpose (docs/language.md), so the
-             example shows a function and a condition instead -->
+             example shows a function, a condition and a plugin instead -->
         <div class="logic">
             <figure class="pane pane-logic">
                 <figcaption class="pane-caption">
-                    <span>project.build · functions and conditions</span>
+                    <span>project.build · functions, conditions, plugins</span>
                     <span>{countLines(LOGIC_EXAMPLE)} lines</span>
                 </figcaption>
                 <pre class="pane-code"><code set:html={logic} /></pre>
@@ -52,6 +53,8 @@ const logic = highlightBuildScript(LOGIC_EXAMPLE);
             <ul class="logic-points">
                 <li><strong>Functions</strong> with typed parameters and defaults. What every module shares is written once.</li>
                 <li><strong>Conditions are values.</strong> The block that runs is the result, like the JDK of a CI build.</li>
+                <li><strong>Strings as types.</strong> <code>"auto" | "local"</code> takes exactly those two, a typo names the nearest one.</li>
+                <li><strong>Plugins are build scripts too.</strong> The Go support is a <a href={LINKS.goPlugin}>66-line build script</a> that downloads Go and runs it. <a href={LINKS.writingPlugins}>Write your own ↗</a></li>
                 <li class="logic-statement display">No loops.<br />No IO.<br />No HTTP.</li>
                 <li class="logic-small">On purpose: building has to be simple and reproducible.</li>
             </ul>
