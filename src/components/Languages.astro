@@ -11,7 +11,7 @@ const statuses = [...new Set(LANGUAGES.map((language) => language.status))];
 
     <div class="page">
         <div class="languages-head">
-            <SectionHeading index="01" label="Languages" id="languages-title">Same commands.<br />Every language.</SectionHeading>
+            <SectionHeading index="01" label="Languages" id="languages-title" lines={["Same commands.", "Every language."]} />
             <p class="languages-lead">
                 build, run, test, new and add work the same everywhere. What they do comes from the language: run starts a
                 jar with its JDK, but installs an Android app on a device. Other languages come as plugins.

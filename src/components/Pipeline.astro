@@ -103,7 +103,7 @@ const layouts = [
     <span class="edge-label run-label" aria-hidden="true">Run</span>
 
     <div class="page">
-        <SectionHeading index="03" label="How it works" id="pipeline-title">From script<br />to artifact.</SectionHeading>
+        <SectionHeading index="03" label="How it works" id="pipeline-title" lines={["From script", "to artifact."]} />
         <p class="pipeline-lead">
             build reads the script, resolves what its modules need, compiles every language with its own compiler and
             builds modules that do not depend on each other at the same time. A module whose inputs did not change is up to

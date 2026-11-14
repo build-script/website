@@ -112,6 +112,15 @@ svg {
     text-transform: uppercase;
 }
 
+/* A headline as large as --fit-size allows and never wider than its container, the nearest ancestor with
+   container-type: --fit-line and --fit-word come from fitStyle in src/lib/fit.ts. A headline that may break
+   between words sets --fit-width to --fit-word and white-space to normal. */
+.fit {
+    --fit-width: var(--fit-line);
+    font-size: min(var(--fit-size), 100cqi / var(--fit-width));
+    white-space: nowrap;
+}
+
 .label {
     font-size: var(--font-size-label);
     letter-spacing: var(--tracking-label);

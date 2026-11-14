@@ -3,6 +3,10 @@ import CopyCommand from "./CopyCommand.astro";
 import Terminal from "./Terminal.astro";
 import { HERO_SESSION } from "../data/terminal";
 import { INSTALL_COMMAND, INSTALL_OTHER_SYSTEMS, VERSION } from "../data/site";
+import { fitStyle } from "../lib/fit";
+
+/** the headline line by line, the last one in the signal color */
+const TITLE = ["Build", "everything.", "One tool."];
 ---
 
 <section class="hero grid-lines" aria-labelledby="hero-title">
@@ -12,11 +16,13 @@ import { INSTALL_COMMAND, INSTALL_OTHER_SYSTEMS, VERSION } from "../data/site";
     <span class="cross" style="bottom: 1.5rem; right: var(--page-gutter);" aria-hidden="true"></span>
 
     <div class="page">
-        <h1 class="hero-title display" id="hero-title">
-            <span class="hero-line">Build</span>
-            <span class="hero-line hero-line-wide">everything.</span>
-            <span class="hero-line hero-line-signal">One tool.</span>
-        </h1>
+        <div class="hero-heading">
+            <h1 class="hero-title display fit" id="hero-title" style={fitStyle(TITLE)}>
+                {TITLE.map((line, index) => (
+                    <span class:list={["hero-line", { "hero-line-signal": index === TITLE.length - 1 }]}>{line}</span>
+                ))}
+            </h1>
+        </div>
 
         <div class="hero-body">
             <div class="hero-copy">
@@ -56,15 +62,13 @@ import { INSTALL_COMMAND, INSTALL_OTHER_SYSTEMS, VERSION } from "../data/site";
         bottom: var(--space-8);
     }
 
-    .hero-title {
-        display: grid;
-        font-size: var(--font-size-hero);
-        /* the widest line runs over the right edge */
-        white-space: nowrap;
+    .hero-heading {
+        container-type: inline-size;
     }
 
-    .hero-line-wide {
-        margin-right: -0.25em;
+    .hero-title {
+        --fit-size: var(--font-size-hero);
+        display: grid;
     }
 
     .hero-line-signal {

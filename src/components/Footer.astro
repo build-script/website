@@ -1,6 +1,9 @@
 ---
 import Barcode from "./Barcode.astro";
 import { COMMIT, LINKS, VERSION } from "../data/site";
+import { fitStyle } from "../lib/fit";
+
+const WORDMARK = "build-script";
 
 const columns = [
     {
@@ -49,7 +52,9 @@ const columns = [
             </nav>
         ))}
     </div>
-    <p class="footer-giant display" aria-hidden="true">build-script</p>
+    <div class="page footer-giant-row" aria-hidden="true">
+        <p class="footer-giant display fit" style={fitStyle([WORDMARK])}>{WORDMARK}</p>
+    </div>
 </footer>
 
 <style>
@@ -107,13 +112,15 @@ const columns = [
         color: var(--color-signal);
     }
 
-    /* the name runs off the bottom of the page */
+    /* the name across the whole width of the page, at the bottom edge */
+    .footer-giant-row {
+        container-type: inline-size;
+    }
+
     .footer-giant {
-        margin-bottom: -0.2em;
-        padding-inline: var(--page-gutter);
-        font-size: var(--font-size-giant);
+        --fit-size: var(--font-size-giant);
+        padding-bottom: 0.06em;
         line-height: 0.78;
-        white-space: nowrap;
         color: var(--color-surface);
         -webkit-text-stroke: 1px var(--color-line);
     }

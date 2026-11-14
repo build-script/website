@@ -1,23 +1,29 @@
 ---
+import { fitStyle } from "../lib/fit";
+import { escapeHtml } from "../lib/html";
+
 interface Props {
     /** the number of the section, like 01 */
     index: string;
     label: string;
     id: string;
+    /** the title, line by line */
+    lines: readonly string[];
 }
 
-const { index, label, id } = Astro.props;
+const { index, label, id, lines } = Astro.props;
 ---
 
 <div class="section-heading">
     <p class="label"><span class="section-index">{index}</span> / {label}</p>
-    <h2 class="section-title display" id={id}><slot /></h2>
+    <h2 class="section-title display fit" id={id} style={fitStyle(lines)} set:html={lines.map(escapeHtml).join("<br />")} />
 </div>
 
 <style>
     .section-heading {
         display: grid;
         gap: var(--space-4);
+        container-type: inline-size;
     }
 
     .section-index {
@@ -25,15 +31,14 @@ const { index, label, id } = Astro.props;
     }
 
     .section-title {
-        font-size: var(--font-size-section);
-        white-space: nowrap;
+        --fit-size: var(--font-size-section);
     }
 
-    /* long titles may break on small screens, the words stay whole */
+    /* on small screens the lines break between words, so the title stays large */
     @media (max-width: 47.99rem) {
         .section-title {
+            --fit-width: var(--fit-word);
             white-space: normal;
-            overflow-wrap: normal;
         }
     }
 </style>
