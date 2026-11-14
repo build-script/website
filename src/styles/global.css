@@ -23,7 +23,12 @@ body {
     font-family: var(--font-mono);
     font-size: var(--font-size-body);
     line-height: var(--line-height-body);
-    /* the headlines run over the edge on purpose, the page does not scroll sideways */
+}
+
+/* The headlines run over the edge on purpose, main cuts them there and the page does not scroll sideways.
+   Not on body: its overflow passes to the viewport, where clip turns into hidden, and a hidden viewport still
+   scrolls sideways when a script, the focus or find in page moves it. */
+main {
     overflow-x: clip;
 }
 
