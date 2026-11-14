@@ -21,6 +21,8 @@ export default defineConfig({
         // the pages are small, one request renders each
         inlineStylesheets: "always",
     },
+    // a page of the site loads while the pointer rests on its link, or as soon as a finger touches it
+    prefetch: { prefetchAll: true, defaultStrategy: "hover" },
     markdown: {
         // code is colored by src/lib/markdown.ts, without a highlighter in the build
         syntaxHighlight: false,
