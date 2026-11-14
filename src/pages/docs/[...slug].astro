@@ -1,0 +1,30 @@
+---
+import type { GetStaticPaths, InferGetStaticPropsType } from "astro";
+import { getCollection, render } from "astro:content";
+import Docs from "../../layouts/Docs.astro";
+import { DOCS } from "../../data/docs";
+
+export const getStaticPaths = (async () => {
+    const entries = await getCollection("docs");
+
+    return DOCS.map((doc) => {
+        const entry = entries.find((candidate) => candidate.id === `${doc.repository}/${doc.path}`);
+        if (entry === undefined) {
+            throw new Error(`.docs/${doc.repository}/${doc.path} is missing: npm run docs fetches it`);
+        }
+        return { params: { slug: doc.slug === "" ? undefined : doc.slug }, props: { doc, entry } };
+    });
+}) satisfies GetStaticPaths;
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+
+const { doc, entry } = Astro.props;
+const { Content, headings } = await render(entry);
+
+// the first line of every doc is its title
+const title = /^# (.+)$/m.exec(entry.body ?? "")?.[1] ?? doc.label;
+---
+
+<Docs doc={doc} title={title} headings={headings}>
+    <Content />
+</Docs>

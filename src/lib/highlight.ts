@@ -60,6 +60,21 @@ export function highlightBuildScript(source: string): string {
     return markup;
 }
 
+/** Shell commands as markup: only the comments are muted, like the ones after a command in the docs */
+export function highlightShell(source: string): string {
+    return source
+        .split("\n")
+        .map((line) => {
+            const comment = /(^|\s)#.*$/.exec(line);
+            if (comment === null) {
+                return escapeHtml(line);
+            }
+            const start = comment.index + (comment[1] ?? "").length;
+            return `${escapeHtml(line.slice(0, start))}<span class="token-comment">${escapeHtml(line.slice(start))}</span>`;
+        })
+        .join("\n");
+}
+
 /** How many lines a source has, without the last line break */
 export function countLines(source: string): number {
     return source.trimEnd().split("\n").length;

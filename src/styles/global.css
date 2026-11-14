@@ -233,6 +233,25 @@ svg {
     line-height: 1;
 }
 
+/* the colors of src/lib/highlight.ts, on the start page and in the docs */
+.token-keyword {
+    color: var(--color-signal);
+}
+
+.token-comment,
+.token-punctuation {
+    color: var(--color-muted);
+}
+
+.token-type {
+    color: var(--color-signal);
+    font-style: italic;
+}
+
+.token-call {
+    font-weight: 700;
+}
+
 /* sections wipe in with a hard edge once they scroll into view, only with JavaScript and motion. The children
    are clipped and not the section: browsers count a clipped element as not visible, and the section is watched. */
 .has-js [data-reveal] > * {

@@ -1,0 +1,72 @@
+---
+import { DOCS, type DocGroup } from "../data/docs";
+import { docHref } from "../lib/docs";
+import { HOME } from "../lib/paths";
+
+interface Props {
+    /** the slug of the doc on screen */
+    current: string;
+}
+
+const { current } = Astro.props;
+
+const groups = [...new Set(DOCS.map((doc) => doc.group))].map((group: DocGroup) => ({
+    group,
+    docs: DOCS.filter((doc) => doc.group === group),
+}));
+---
+
+<ul class="docs-nav">
+    {groups.map(({ group, docs }) => (
+        <li>
+            <p class="label">{group}</p>
+            <ul>
+                {docs.map((doc) => (
+                    <li>
+                        <a href={docHref(doc.slug, HOME)} aria-current={doc.slug === current ? "page" : undefined}>{doc.label}</a>
+                    </li>
+                ))}
+            </ul>
+        </li>
+    ))}
+</ul>
+
+<style>
+    .docs-nav,
+    .docs-nav ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .docs-nav {
+        display: grid;
+        gap: var(--space-6);
+    }
+
+    .docs-nav ul {
+        display: grid;
+        margin-top: var(--space-3);
+        border-left: 1px solid var(--color-line);
+    }
+
+    .docs-nav a {
+        display: block;
+        margin-left: -1px;
+        padding: var(--space-1) var(--space-4);
+        border-left: 2px solid transparent;
+        font-size: var(--font-size-small);
+        color: var(--color-muted);
+        text-decoration: none;
+    }
+
+    .docs-nav a:hover {
+        color: var(--color-text);
+    }
+
+    .docs-nav a[aria-current="page"] {
+        border-left-color: var(--color-lime);
+        color: var(--color-text);
+        font-weight: 700;
+    }
+</style>
