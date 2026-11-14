@@ -1,0 +1,291 @@
+---
+import SectionHeading from "./SectionHeading.astro";
+import { EDGES, STAGES, type PipelineNode } from "../data/pipeline";
+
+interface PlacedNode extends PipelineNode {
+    x: number;
+    y: number;
+}
+
+interface Layout {
+    width: number;
+    height: number;
+    nodeWidth: number;
+    nodeHeight: number;
+    /** where the text of a node starts, from its left side */
+    textInset: number;
+    nodes: PlacedNode[];
+    stageLabels: Array<{ name: string; x: number; y: number }>;
+    edges: Array<{ path: string; highlighted: boolean }>;
+    crosses: Array<{ x: number; y: number }>;
+}
+
+const MOST_NODES = Math.max(...STAGES.map((stage) => stage.nodes.length));
+
+/** Stages side by side, edges from the right side of a node to the left side of the next */
+function horizontal(): Layout {
+    const [nodeWidth, nodeHeight, column, row, top] = [228, 70, 304, 100, 70];
+    const nodes = STAGES.flatMap((stage, stageIndex) =>
+        stage.nodes.map((node, index) => ({
+            ...node,
+            x: 16 + stageIndex * column,
+            y: top + (MOST_NODES - stage.nodes.length) * (row / 2) + index * row,
+        })),
+    );
+    const byId = new Map(nodes.map((node) => [node.id, node]));
+    const edges = EDGES.map(([from, to]) => {
+        const [source, target] = [byId.get(from)!, byId.get(to)!];
+        const [x1, y1] = [source.x + nodeWidth, source.y + nodeHeight / 2];
+        const [x2, y2] = [target.x, target.y + nodeHeight / 2];
+        const middle = (x1 + x2) / 2;
+
+        return {
+            path: `M${x1} ${y1}H${middle}V${y2}H${x2}`,
+            highlighted: Boolean(source.highlighted && target.highlighted),
+        };
+    });
+    const height = top + MOST_NODES * row + 10;
+
+    return {
+        width: 16 * 2 + (STAGES.length - 1) * column + nodeWidth,
+        height,
+        nodeWidth,
+        nodeHeight,
+        textInset: 14,
+        nodes,
+        edges,
+        stageLabels: STAGES.map((stage, index) => ({ name: stage.name, x: 16 + index * column, y: 30 })),
+        crosses: STAGES.flatMap((_, index) => [
+            { x: 16 + index * column + nodeWidth + (column - nodeWidth) / 2, y: 22 },
+            { x: 16 + index * column + nodeWidth + (column - nodeWidth) / 2, y: height - 6 },
+        ]).slice(0, -2),
+    };
+}
+
+/** Stages one below the other, two nodes in a row, the highlighted path through all of them */
+function vertical(): Layout {
+    const [nodeWidth, nodeHeight, gap, stageGap, labelHeight] = [164, 74, 8, 56, 34];
+    const width = nodeWidth * 2 + gap + 8;
+    const nodes: PlacedNode[] = [];
+    const stageLabels: Layout["stageLabels"] = [];
+    let y = 4;
+
+    for (const stage of STAGES) {
+        stageLabels.push({ name: stage.name, x: 4, y: y + 18 });
+        y += labelHeight;
+
+        stage.nodes.forEach((node, index) => {
+            nodes.push({ ...node, x: 4 + (index % 2) * (nodeWidth + gap), y: y + Math.floor(index / 2) * (nodeHeight + gap) });
+        });
+
+        y += Math.ceil(stage.nodes.length / 2) * (nodeHeight + gap) - gap + stageGap;
+    }
+
+    const highlighted = nodes.filter((node) => node.highlighted);
+    const edges = highlighted.slice(1).map((target, index) => {
+        const source = highlighted[index]!;
+        const [x1, y1] = [source.x + nodeWidth / 2, source.y + nodeHeight];
+        const [x2, y2] = [target.x + nodeWidth / 2, target.y];
+
+        return { path: `M${x1} ${y1}V${(y1 + y2) / 2 + 8}H${x2}V${y2}`, highlighted: true };
+    });
+
+    return { width, height: y - stageGap + 8, nodeWidth, nodeHeight, textInset: 10, nodes, edges, stageLabels, crosses: [] };
+}
+
+const layouts = [
+    { name: "horizontal", layout: horizontal() },
+    { name: "vertical", layout: vertical() },
+];
+---
+
+<section class="pipeline grid-lines" id="how-it-works" aria-labelledby="pipeline-title" data-reveal>
+    <span class="edge-label run-label" aria-hidden="true">Run</span>
+
+    <div class="page">
+        <SectionHeading index="03" label="How it works" id="pipeline-title">From script<br />to artifact.</SectionHeading>
+        <p class="pipeline-lead">
+            build reads the script, resolves what its modules need, compiles every language with its own compiler and
+            builds modules that do not depend on each other at the same time. A module whose inputs did not change is up to
+            date and does not build again.
+        </p>
+
+        {layouts.map(({ name, layout }) => (
+            <svg
+                class={`diagram diagram-${name}`}
+                viewBox={`0 0 ${layout.width} ${layout.height}`}
+                role="img"
+                aria-labelledby={`pipeline-${name}-title`}
+            >
+                <title id={`pipeline-${name}-title`}>
+                    The pipeline of build-script: project.build and project.lock, then Maven repositories, vcpkg ports,
+                    plugins, JDKs and tools, then kotlinc and javac, aapt2 and d8, clang and go build, then jars, apks,
+                    libraries and programs.
+                </title>
+                {layout.crosses.map((cross) => (
+                    <path class="cross-mark" d={`M${cross.x - 5} ${cross.y - 5}l10 10m0 -10l-10 10`} />
+                ))}
+                {layout.edges.filter((edge) => !edge.highlighted).map((edge) => (
+                    <path class="edge" d={edge.path} />
+                ))}
+                {layout.edges.filter((edge) => edge.highlighted).map((edge) => (
+                    <path class="edge edge-highlighted" d={edge.path} />
+                ))}
+                {layout.nodes.map((node) => (
+                    <g class:list={["node", { "node-highlighted": node.highlighted }]}>
+                        {node.highlighted && (
+                            <rect class="node-contour" x={node.x - 5} y={node.y - 5} width={layout.nodeWidth + 10} height={layout.nodeHeight + 10} rx="2" />
+                        )}
+                        <rect class="node-box" x={node.x} y={node.y} width={layout.nodeWidth} height={layout.nodeHeight} rx="2" />
+                        <text class="node-label" x={node.x + layout.textInset} y={node.y + 30}>{node.label}</text>
+                        <text class="node-detail" x={node.x + layout.textInset} y={node.y + 52}>{node.detail}</text>
+                    </g>
+                ))}
+                {/* over the lines, with a halo of the background where a line crosses */}
+                {layout.stageLabels.map((label, index) => (
+                    <text class="stage-label" x={label.x} y={label.y}>
+                        {String(index + 1).padStart(2, "0")} / {label.name.toUpperCase()}
+                    </text>
+                ))}
+            </svg>
+        ))}
+
+        <p class="pipeline-note label">
+            Every module keeps a fingerprint of its inputs in build/fingerprints/ · nothing changed: <span class="note-module">[api]</span> Up to date
+        </p>
+    </div>
+    <div class="pipeline-stripes hazard" aria-hidden="true"></div>
+</section>
+
+<style>
+    .pipeline {
+        position: relative;
+        padding-block: var(--space-9);
+        border-top: 1px solid var(--color-line);
+        overflow: hidden;
+    }
+
+    .run-label {
+        top: var(--space-9);
+        right: calc(var(--page-gutter) / 2 - 0.4rem);
+    }
+
+    .pipeline-lead {
+        max-width: 44rem;
+        margin-top: var(--space-6);
+        color: var(--color-muted);
+    }
+
+    .diagram {
+        width: 100%;
+        height: auto;
+        margin-top: var(--space-8);
+        font-family: var(--font-mono);
+        overflow: visible;
+    }
+
+    .diagram-vertical {
+        display: none;
+        max-width: 26rem;
+    }
+
+    .stage-label {
+        font-size: 12px;
+        letter-spacing: 0.14em;
+        fill: var(--color-muted);
+        paint-order: stroke;
+        stroke: var(--color-background);
+        stroke-width: 8px;
+    }
+
+    .cross-mark {
+        stroke: var(--color-muted);
+        stroke-width: 1;
+    }
+
+    path.edge {
+        fill: none;
+        stroke: var(--color-line);
+        stroke-width: 1.5;
+    }
+
+    path.edge-highlighted {
+        stroke: var(--color-lime);
+        stroke-width: 2.5;
+    }
+
+    .node-box {
+        fill: var(--color-surface);
+        stroke: var(--color-line);
+        stroke-width: 1;
+    }
+
+    .node-contour {
+        fill: none;
+        stroke: var(--color-lime);
+        stroke-width: 3;
+    }
+
+    .node-label {
+        font-size: 15px;
+        fill: var(--color-muted);
+    }
+
+    .node-detail {
+        font-size: 12px;
+        fill: var(--color-muted);
+    }
+
+    .diagram-vertical .node-label {
+        font-size: 13px;
+    }
+
+    .diagram-vertical .node-detail {
+        font-size: 11px;
+    }
+
+    .node-highlighted .node-label {
+        fill: var(--color-text);
+        font-weight: 700;
+    }
+
+    .node-highlighted .node-box {
+        stroke: var(--color-signal);
+    }
+
+    .pipeline-note {
+        margin-top: var(--space-6);
+    }
+
+    .note-module {
+        color: var(--color-signal);
+    }
+
+    .pipeline-stripes {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: min(30vw, 22rem);
+        height: var(--space-6);
+        border-right: 1px solid var(--color-line);
+        border-bottom: 1px solid var(--color-line);
+    }
+
+    @media (max-width: 47.99rem) {
+        .pipeline {
+            padding-block: var(--space-8);
+        }
+
+        .edge-label {
+            display: none;
+        }
+
+        .diagram-horizontal {
+            display: none;
+        }
+
+        .diagram-vertical {
+            display: block;
+        }
+    }
+</style>
