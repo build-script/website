@@ -1,0 +1,211 @@
+---
+import SectionHeading from "./SectionHeading.astro";
+import { LANGUAGES } from "../data/languages";
+
+const statuses = [...new Set(LANGUAGES.map((language) => language.status))];
+---
+
+<section class="languages grid-lines" id="languages" aria-labelledby="languages-title" data-reveal>
+    <span class="edge-label edge" aria-hidden="true">Deps</span>
+    <span class="cross" style="top: 0; left: var(--page-gutter);" aria-hidden="true"></span>
+
+    <div class="page">
+        <div class="languages-head">
+            <SectionHeading index="01" label="Languages" id="languages-title">Same commands.<br />Every language.</SectionHeading>
+            <p class="languages-lead">
+                build, run, test, new and add work the same everywhere. What they do comes from the language: run starts a
+                jar with its JDK, but installs an Android app on a device. Other languages come as plugins.
+            </p>
+        </div>
+
+        <ul class="languages-grid" data-languages>
+            {LANGUAGES.map((language, index) => (
+                <li class:list={["language", { "is-active": index === 0 }]} data-language>
+                    <a class="language-link" href={language.docs}>
+                        <span class="language-mark display" aria-hidden="true">{language.mark}</span>
+                        <span class="language-name">{language.name}</span>
+                        <code class="language-use">{language.use}</code>
+                        <span class="language-builds">{language.builds}</span>
+                        <span class="language-meta label">
+                            <span>{language.source}</span>
+                            <span class="language-status"><span class="status-dot" aria-hidden="true"></span>{language.status}</span>
+                        </span>
+                    </a>
+                </li>
+            ))}
+        </ul>
+
+        <p class="languages-legend label">
+            {statuses.map((status) => (
+                <span><span class="status-dot" aria-hidden="true"></span>{status}</span>
+            ))}
+            <span>· status as of the repository</span>
+        </p>
+    </div>
+</section>
+
+<script>
+    import { rotateLanguages } from "../scripts/languages";
+
+    rotateLanguages();
+</script>
+
+<style>
+    .languages {
+        position: relative;
+        padding-block: var(--space-9);
+        border-top: 1px solid var(--color-line);
+    }
+
+    .edge {
+        top: var(--space-9);
+        right: calc(var(--page-gutter) / 2 - 0.4rem);
+    }
+
+    .languages-head {
+        display: grid;
+        gap: var(--space-6);
+    }
+
+    .languages-lead {
+        max-width: 40rem;
+        color: var(--color-muted);
+    }
+
+    .languages-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 1px;
+        margin-top: var(--space-8);
+        padding: 0;
+        list-style: none;
+        border: 1px solid var(--color-line);
+        background: var(--color-line);
+    }
+
+    .language {
+        position: relative;
+        background: var(--color-background);
+    }
+
+    /* the plugin for your own language closes the last row, with four or with two columns */
+    .language:last-child {
+        grid-column: span 2;
+    }
+
+    .language-link {
+        display: grid;
+        gap: var(--space-2);
+        height: 100%;
+        padding: var(--space-5);
+        color: var(--color-muted);
+        text-decoration: none;
+    }
+
+    .language-link:focus-visible {
+        outline-offset: -6px;
+    }
+
+    .language-mark {
+        margin-bottom: var(--space-5);
+        font-size: clamp(3rem, 2rem + 3vw, 5.5rem);
+        color: var(--color-line);
+        transition: color 120ms linear;
+    }
+
+    .language-name {
+        font-size: var(--font-size-lead);
+        color: var(--color-muted);
+    }
+
+    .language-use {
+        font-size: var(--font-size-small);
+    }
+
+    .language-builds {
+        font-size: var(--font-size-small);
+    }
+
+    .language-meta {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: var(--space-2);
+        margin-top: var(--space-4);
+    }
+
+    .language-status,
+    .languages-legend span {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+    }
+
+    .status-dot {
+        width: 7px;
+        height: 7px;
+        border: 1px solid currentColor;
+        border-radius: 1px;
+    }
+
+    /* the one language in color: lime contour, orange mark, full text */
+    .language.is-active,
+    :global(html:not(.has-js)) .language:hover {
+        z-index: 1;
+        background: var(--color-surface);
+    }
+
+    .language.is-active::after,
+    :global(html:not(.has-js)) .language:hover::after {
+        content: "";
+        position: absolute;
+        inset: calc(var(--outline-reach) * -0.6);
+        border: var(--outline-width) solid var(--color-lime);
+        border-radius: var(--radius);
+        pointer-events: none;
+    }
+
+    .language.is-active .language-mark,
+    :global(html:not(.has-js)) .language:hover .language-mark {
+        color: var(--color-signal);
+    }
+
+    .language.is-active .language-name,
+    .language.is-active .language-use,
+    :global(html:not(.has-js)) .language:hover .language-name,
+    :global(html:not(.has-js)) .language:hover .language-use {
+        color: var(--color-text);
+    }
+
+    .language.is-active .status-dot {
+        border-color: var(--color-lime);
+        background: var(--color-lime);
+    }
+
+    .languages-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-5);
+        margin-top: var(--space-5);
+    }
+
+    @media (max-width: 63.99rem) {
+        .languages-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 47.99rem) {
+        .languages {
+            padding-block: var(--space-8);
+        }
+
+        .edge-label {
+            display: none;
+        }
+
+        .language-link {
+            padding: var(--space-4);
+        }
+    }
+</style>
