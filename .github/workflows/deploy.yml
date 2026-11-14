@@ -1,7 +1,7 @@
 # The site on GitHub Pages after every push to main, built with the address of the Pages settings and with the docs,
-# the version and the commit of main of build-script and its plugins. Those change without a push here: the check of
-# build-script sends a repository_dispatch of the type build-script once its main is green, and a daily build picks
-# up the rest, like the docs of the plugins.
+# the version and the commit of main of build-script and its plugins. Those change without a push here, so both send
+# a repository_dispatch: build-script of the type build-script once its main is green, the plugins of the type plugins
+# after every push to main. A daily build catches up when a dispatch got lost.
 name: deploy
 
 on:
@@ -10,7 +10,7 @@ on:
   schedule:
     - cron: "17 4 * * *"
   repository_dispatch:
-    types: [build-script]
+    types: [build-script, plugins]
   workflow_dispatch:
 
 permissions:
