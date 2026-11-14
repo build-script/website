@@ -26,7 +26,7 @@ const logic = highlightBuildScript(LOGIC_EXAMPLE);
                     <span>pom.xml · Maven</span>
                     <span>{countLines(POM_XML)} lines</span>
                 </figcaption>
-                <pre class="pane-code pane-code-faded"><code set:html={pom} /></pre>
+                <pre class="pane-code" tabindex="0" aria-label="pom.xml, scrolls"><code set:html={pom} /></pre>
             </figure>
 
             <figure class="pane pane-script contour">
@@ -115,15 +115,11 @@ const logic = highlightBuildScript(LOGIC_EXAMPLE);
         line-height: 1.7;
     }
 
-    /* Maven in gray, cut off: the reader gets the idea before the end */
+    /* Maven in gray, as high as the script next to it: the reader gets the idea and may scroll through all of it */
     .pane-pom .pane-code {
         max-height: 30rem;
-        overflow: hidden;
+        overflow: auto;
         color: var(--color-muted);
-    }
-
-    .pane-code-faded {
-        mask-image: linear-gradient(to bottom, #000 55%, transparent);
     }
 
     .pane-script {
