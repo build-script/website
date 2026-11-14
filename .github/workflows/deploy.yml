@@ -1,9 +1,15 @@
-# The page on GitHub Pages after every push to main, built with the address of the Pages settings
+# The site on GitHub Pages after every push to main, built with the address of the Pages settings and the docs as
+# they are on main of build-script and its plugins. Those change without a push here: a daily build picks them up,
+# and a repository_dispatch of the type docs (gh api repos/build-script/website/dispatches -f event_type=docs) at once.
 name: deploy
 
 on:
   push:
     branches: [main]
+  schedule:
+    - cron: "17 4 * * *"
+  repository_dispatch:
+    types: [docs]
   workflow_dispatch:
 
 permissions:
@@ -32,6 +38,9 @@ jobs:
 
       - name: Install
         run: npm ci
+
+      - name: Docs
+        run: npm run docs
 
       - name: Check and build
         run: npm run build

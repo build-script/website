@@ -12,7 +12,8 @@
     "check": "astro check",
     "build": "astro check && astro build",
     "preview": "astro preview",
-    "fonts": "node scripts/subset-fonts.ts"
+    "fonts": "node scripts/subset-fonts.ts",
+    "docs": "node scripts/fetch-docs.ts"
   },
   "dependencies": {
     "astro": "^7.4.12"

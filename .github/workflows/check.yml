@@ -1,4 +1,4 @@
-# The type check and the build of the page on every push and pull request
+# The type check and the build of the site on every push and pull request
 name: check
 
 on:
@@ -21,12 +21,17 @@ jobs:
       - name: Install
         run: npm ci
 
+      - name: Docs
+        run: npm run docs
+
       - name: Check and build
         run: npm run build
         env:
           ASTRO_TELEMETRY_DISABLED: 1
 
-      - name: Size of the page
+      - name: Size of the pages
         run: |
-          echo "index.html: $(wc -c < dist/index.html) bytes, $(gzip -9 -c dist/index.html | wc -c) gzipped"
+          for page in $(cd dist && find . -name index.html | sort); do
+            echo "$page: $(wc -c < "dist/$page") bytes, $(gzip -9 -c "dist/$page" | wc -c) gzipped"
+          done
           ls -l dist/_astro dist/_astro/fonts
