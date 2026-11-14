@@ -1,15 +1,21 @@
 // What the page says about build-script itself: its version, its commit and where things are. The docs are pages
 // of this site, see src/data/docs.ts, everything else is on GitHub.
-import { docHref } from "../lib/docs";
+import { buildScriptVersion, docCommit, docHref } from "../lib/docs";
 import { HOME } from "../lib/paths";
 
 export const REPOSITORY = "https://github.com/build-script/build";
 
-/** The release the page describes, from Cargo.toml of build-script */
-export const VERSION = "0.1.0";
+/** The version of build-script on main, from its Cargo.toml as npm run docs fetched it */
+export const VERSION = buildScriptVersion();
 
-/** The commit of build-script the outputs on the page were taken from */
-export const COMMIT = "e717afb";
+/** The commit of build-script on main the site was built from, short like git shows it */
+export const COMMIT = docCommit("build").slice(0, 7);
+
+/**
+ * The commit of build-script the outputs of the terminal and the quickstart were taken from: they are real
+ * captures, take them again and set this when the output of build-script changes
+ */
+export const OUTPUTS_COMMIT = "e717afb";
 
 export const LINKS = {
     docs: docHref("", HOME),

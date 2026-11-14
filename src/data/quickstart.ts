@@ -1,4 +1,4 @@
-// The first steps with build-script, with the output it really prints, taken at the commit of site.ts
+// The first steps with build-script, with the output it really prints, taken at OUTPUTS_COMMIT of site.ts
 
 export interface QuickstartStep {
     title: string;

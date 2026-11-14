@@ -1,4 +1,4 @@
-// Real output of build-script, taken at the commit of site.ts from a workspace with a Kotlin app, a C++ library and
+// Real output of build-script, taken at OUTPUTS_COMMIT of site.ts from a workspace with a Kotlin app, a C++ library and
 // a module of the Go plugin, the same project build twice. Only the home directory is written as ~.
 
 export interface TerminalLine {

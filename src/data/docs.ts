@@ -3,17 +3,23 @@
 
 export const DOCS_DIRECTORY = ".docs";
 
-/** What npm run docs writes next to the docs: the commit of every repository it fetched */
+/** What npm run docs writes next to the docs: the commit of every repository it fetched, the version of build-script */
 export const DOC_SOURCES_FILE = `${DOCS_DIRECTORY}/sources.json`;
 
 export const REPOSITORIES = {
-    build: { name: "build-script/build", url: "https://github.com/build-script/build", branch: "main" },
+    build: {
+        name: "build-script/build",
+        url: "https://github.com/build-script/build",
+        branch: "main",
+        /** the version the header and the barcode show, from the version of the package */
+        versionFile: "Cargo.toml",
+    },
     plugins: { name: "build-script/plugins", url: "https://github.com/build-script/plugins", branch: "main" },
 } as const;
 
 export type RepositoryKey = keyof typeof REPOSITORIES;
 
-export type DocSources = Record<RepositoryKey, { commit: string }>;
+export type DocSources = Record<RepositoryKey, { commit: string; version?: string }>;
 
 export type DocGroup = "Start" | "Languages" | "Plugins";
 

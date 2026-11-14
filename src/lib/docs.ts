@@ -100,8 +100,20 @@ export function docFile(fileURL: URL | undefined): RepositoryFile | undefined {
     return { repository: repository as RepositoryKey, path: decodeURIComponent(path) };
 }
 
+function docSources(): DocSources {
+    return JSON.parse(readFileSync(DOC_SOURCES_FILE, "utf8")) as DocSources;
+}
+
 /** The commit the docs of a repository were fetched at */
 export function docCommit(repository: RepositoryKey): string {
-    const sources = JSON.parse(readFileSync(DOC_SOURCES_FILE, "utf8")) as DocSources;
-    return sources[repository].commit;
+    return docSources()[repository].commit;
+}
+
+/** The version of build-script at the commit its docs were fetched at, from its Cargo.toml */
+export function buildScriptVersion(): string {
+    const version = docSources().build.version;
+    if (version === undefined) {
+        throw new Error(`${DOC_SOURCES_FILE} has no version of build-script: npm run docs notes it`);
+    }
+    return version;
 }
