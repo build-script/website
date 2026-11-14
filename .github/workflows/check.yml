@@ -1,0 +1,32 @@
+# The type check and the build of the page on every push and pull request
+name: check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Check and build
+        run: npm run build
+        env:
+          ASTRO_TELEMETRY_DISABLED: 1
+
+      - name: Size of the page
+        run: |
+          echo "index.html: $(wc -c < dist/index.html) bytes, $(gzip -9 -c dist/index.html | wc -c) gzipped"
+          ls -l dist/_astro dist/_astro/fonts
